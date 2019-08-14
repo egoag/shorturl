@@ -14,11 +14,11 @@ const AVATAR = 'https://lh6.googleusercontent.com/-J_c_gM2Z8-w/AAAAAAAAAAI/AAAAA
  *}
  */
 class User {
-  constructor ({ id, name, avatar, locale }) {
-    this.id = id
+  constructor ({ id, urlId, varies, name, avatar, locale }) {
+    this.id = id || urlId
     this.name = name
     this.avatar = avatar || AVATAR
-    this.varies = VARIES
+    this.varies = varies || VARIES
     this.locale = locale
   }
 
@@ -33,7 +33,7 @@ class User {
 
     debug(data)
     if (!data || !data.Item) {
-      throw new Error('User not found.')
+      return null
     } else {
       return new User(data.Item)
     }

@@ -1,12 +1,18 @@
+const { AuthenticationError } = require('apollo-server-express')
 const debug = require('debug')('debug:resolver:users')
-const Url = require('../models/url')
+
 const User = require('../models/user')
 const { sign } = require('../lib/auth')
 const { getUserInfo } = require('../lib/oauth')
 
 /* URL */
-const getUrls = async (user) => {
-  const urls = await Url.getByOwnerId({ ownerId: user.id })
+const getUrls = async (user, _, context) => {
+  const ownerId = context.user.email
+  if (!ownerId || ownerId !== user.id) {
+    throw new AuthenticationError('Unauthorized')
+  }
+
+  const urls = await User.getUrlsByOwnerId({ ownerId: user.id })
   return urls
 }
 
@@ -17,7 +23,7 @@ const login = async (_, { token: accessToken }) => {
     info = await getUserInfo(accessToken)
   } catch (e) {
     debug(e)
-    throw new Error('Invalid token')
+    throw new AuthenticationError('Invalid token')
   }
 
   debug(info)

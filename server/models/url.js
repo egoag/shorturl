@@ -1,7 +1,7 @@
 const debug = require('debug')('debug:model:url')
 
 const randomId = require('../lib/randomId')
-const { client, pageParse, TableName, UserIndex, Limit } = require('../lib/db')
+const { client, pageParse, TableName, Limit } = require('../lib/db')
 
 const SET_EXP = 'set #url = :url, latest = :latest, ownerId = :ownerId, createdAt = :createdAt, updatedAt = :updatedAt'
 const SET_EXP_NAMES = { '#url': 'url' }
@@ -52,7 +52,7 @@ class Url {
 
     debug(data)
     if (!data || !data.Item) {
-      throw new Error('URL not found.')
+      return null
     } else {
       return new Url(data.Item)
     }
@@ -111,12 +111,47 @@ class Url {
   }
 
   async delete () {
-    const keys = this._getKeys()
-    const data = await client.delete({
-      TableName,
-      Key: keys
-    })
-    debug(data)
+    if (this.latest > 0) {
+      // batch delete
+      // todo: handle batch errors
+      const keys = this._getAllVersionKeys()
+      if (keys.length + 1 > 25) {
+        // split into 25-items tasks
+        const batches = []
+        for (let i = 0; i < Math.ceil((keys.length + 1) / 25); i++) {
+          const task = client.batchWrite({
+            RequestItems: {
+              [TableName]: keys.slice(i * 25, (i + 1) * 25).map(key => ({ DeleteRequest: { Key: key } }))
+            }
+          })
+          batches.push(task)
+        }
+        // run tasks parallel
+        const data = await Promise.all(batches)
+        debug(data)
+      } else {
+        // single batch delete operation
+        const data = await client.batchWrite({
+          RequestItems: {
+            [TableName]: keys.map(key => ({ DeleteRequest: { Key: key } }))
+          }
+        })
+        debug(data)
+      }
+    } else {
+      // single delete
+      const keys = this._getKeys()
+      const data = await client.delete({
+        TableName,
+        Key: keys
+      })
+      debug(data)
+    }
+  }
+
+  _getVaries (latest) {
+    // by default use this.latest
+    return `V${latest !== undefined ? latest : this.latest}`
   }
 
   _getKeys () {
@@ -124,6 +159,18 @@ class Url {
       urlId: this.id,
       varies: this.varies
     }
+  }
+
+  _getAllVersionKeys () {
+    const keys = []
+    for (let i = 0; i <= this.latest; i++) {
+      keys.push({
+        urlId: this.id,
+        varies: this._getVaries(i)
+      })
+    }
+    debug(keys)
+    return keys
   }
 
   _getAttrs () {
@@ -173,7 +220,7 @@ class Url {
     delete newAttrs.latest // only v0 needs to keep track of latest number
     const newItem = {
       urlId: this.id, // same partition key
-      varies: `V${this.latest}`, // increase sort key by 1
+      varies: this._getVaries(), // increase sort key by 1
       ...newAttrs
     }
 

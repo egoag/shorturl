@@ -1,16 +1,13 @@
+const { AuthenticationError } = require('apollo-server-express')
+
 const Url = require('../models/url')
 const User = require('../models/user')
-const debug = require('debug')('debug:resolver:urls')
 
 /* User */
 const getUser = async (url) => {
-  try {
-    const user = await User.getById(url.ownerId)
-    return user
-  } catch (e) {
-    debug(e)
-    return null
-  }
+  if (!url.ownerId) return null
+  const user = await User.getById(url.ownerId)
+  return user
 }
 
 /* Query */
@@ -22,7 +19,7 @@ const getUrlById = async (_, { id }) => {
 const getMyUrls = async (_, { limit, lastKey: lastKeyString }, context) => {
   const ownerId = context.user.email
   if (!ownerId) {
-    throw new Error('Unauthorized')
+    throw new AuthenticationError('Unauthorized')
   }
 
   let lastKey
@@ -35,14 +32,13 @@ const getMyUrls = async (_, { limit, lastKey: lastKeyString }, context) => {
   }
 
   const urls = await User.getUrlsByOwnerId({ ownerId, limit, lastKey })
-  debug(urls)
   return urls
 }
 
-const getUrlVersions = async (_, { id, limit, lastKey: lastKeyString }, context) => {
+const getUrlVersions = async (url, { id, limit, lastKey: lastKeyString }, context) => {
   const ownerId = context.user.email
   if (!ownerId) {
-    throw new Error('Unauthorized')
+    throw new AuthenticationError('Unauthorized')
   }
 
   let lastKey
@@ -54,7 +50,7 @@ const getUrlVersions = async (_, { id, limit, lastKey: lastKeyString }, context)
     }
   }
 
-  const urls = await Url.getByIdAllVersion({ id, lastKey, limit })
+  const urls = await Url.getByIdAllVersion({ id: url ? url.id : id, lastKey, limit })
   return urls
 }
 
@@ -67,19 +63,30 @@ const addUrl = async (_, { url }, context) => {
 
 const updateUrl = async (_, { id, url }, context) => {
   if (!context.user.email) {
-    throw new Error('Unauthorized')
+    throw new AuthenticationError('Unauthorized')
   }
 
-  let obj
-  try {
-    obj = await Url.getById({ id })
-  } catch (e) {
-    // todo: check not found
+  const obj = await Url.getById({ id })
+  if (obj === null) {
     throw new Error('Not found')
   }
 
   await obj.updateUrl(url)
   return obj
+}
+
+const deleteUrl = async (_, { id }, context) => {
+  if (!context.user.email) {
+    throw new AuthenticationError('Unauthorized')
+  }
+
+  const obj = await Url.getById({ id })
+  if (obj === null) {
+    throw new Error('Not found')
+  }
+
+  await obj.delete()
+  return true
 }
 
 module.exports = {
@@ -88,5 +95,6 @@ module.exports = {
   getMyUrls,
   getUrlVersions,
   addUrl,
-  updateUrl
+  updateUrl,
+  deleteUrl
 }

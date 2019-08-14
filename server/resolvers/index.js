@@ -1,22 +1,25 @@
 const urls = require('./urls')
 const users = require('./users')
+const { getEndpoint } = require('../lib/oauth')
 
 const resolvers = {
   URL: {
-    owner: urls.getUser
+    owner: urls.getUser,
+    versions: urls.getUrlVersions
   },
   User: {
     urls: users.getUrls
   },
   Query: {
+    getOauthUrl: getEndpoint,
     login: users.login,
-    getUrlbyId: urls.getUrlById,
     getMyUrls: urls.getMyUrls,
-    getUrlVersions: urls.getUrlVersions
+    getUrlbyId: urls.getUrlById
   },
   Mutation: {
     addUrl: urls.addUrl,
-    updateUrl: urls.updateUrl
+    updateUrl: urls.updateUrl,
+    deleteUrl: urls.deleteUrl
   }
 }
 

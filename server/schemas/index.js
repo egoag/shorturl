@@ -7,14 +7,16 @@ type URL {
   owner: User
   latest: Int
   varies: String
+  versions: Urls
   createdAt: String
   updatedAt: String
 }
 
 type User {
   id: String
+  name: String
   avatar: String
-  urls: [URL]
+  urls: Urls
 }
 
 type Auth {
@@ -28,16 +30,16 @@ type Urls {
 }
 
 type Query {
+  getOauthUrl: String
   login(token: String!): Auth
   getMyUrls(limit: Int, lastKey: String): Urls
-  getUrlVersions(id: ID!, limit: Int, lastKey: String): Urls
   getUrlbyId(id: ID!): URL
 }
 
 type Mutation {
-  updateUrl(id: ID!, url: String!): URL
   addUrl(url: String!) : URL
+  updateUrl(id: ID!, url: String!): URL
+  deleteUrl(id: ID!): Boolean
 }
 `
-
 module.exports = schema
