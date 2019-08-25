@@ -19,11 +19,7 @@ resource "aws_api_gateway_deployment" "default" {
 
 resource "aws_api_gateway_domain_name" "default" {
   domain_name = "${var.domain_name}.${var.domain}"
-  regional_certificate_arn = "${aws_acm_certificate_validation.cert.certificate_arn}"
-
-  endpoint_configuration {
-    types = ["REGIONAL"]
-  }
+  certificate_arn = "${aws_acm_certificate_validation.cert.certificate_arn}"
 }
 
 resource "aws_api_gateway_base_path_mapping" "default" {
@@ -37,7 +33,7 @@ resource "cloudflare_record" "cname" {
   domain = "${var.domain}"
   name = "${var.domain_name}"
   type = "CNAME"
-  value = "${aws_api_gateway_domain_name.default.regional_domain_name}"
+  value = "${aws_api_gateway_domain_name.default.cloudfront_domain_name}"
   ttl = 1 # 1: auto
 }
 

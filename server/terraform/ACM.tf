@@ -1,4 +1,5 @@
 resource "aws_acm_certificate" "cert" {
+  provider = "aws.global"
   domain_name = "${var.domain_name}.${var.domain}"
   validation_method = "DNS"
 }
@@ -12,6 +13,7 @@ resource "cloudflare_record" "acm_validation"{
 }
 
 resource "aws_acm_certificate_validation" "cert" {
+  provider = "aws.global"
   certificate_arn = "${aws_acm_certificate.cert.arn}"
 
   validation_record_fqdns = [
