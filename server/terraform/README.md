@@ -6,7 +6,7 @@ Deploy code with terraform, and update DNS with cloudflare.
 
 Zip the source code, terraform apply.
 
-- In `/server` directory, zip the code folder: `zip -r -0 ../terraform/server/server.zip .`.
+- In `/server` directory, zip the code folder: `zip -r -0 --exclude=*.DS_Store* --exclude=*.git* --exclude=terraform* terraform/server.zip .`.
 
 - In `/terraform/server` directory, initialize terraform: `terraform init`.
 
