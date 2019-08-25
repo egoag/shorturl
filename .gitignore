@@ -86,3 +86,14 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+
+# terraform
+.terraform
+*.tfstate
+*.tfstate.*
+*.auto.tfvars
+terraform.tfvars
+
+# lambda
+client.zip
+server.zip

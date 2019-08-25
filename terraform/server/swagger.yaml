@@ -1,18 +1,15 @@
 swagger: '2.0'
 info:
   version: '1.0'
-  title: "CodingTips"
+  title: "Short URL"
 schemes:
   - https
 paths:
   "/":
     get:
-      description: "Home page"
+      description: "Home"
       produces:
-        - application/xml
-      responses:
-        200:
-          description: "Home page"
+        - application/json
       x-amazon-apigateway-integration:
         uri: ${lambda_arn}
         passthroughBehavior: "when_no_match"
@@ -26,73 +23,45 @@ paths:
       responses:
         200:
           description: "graphql playground"
-          schema:
-            type: array
-            items:
-              $ref: "#/definitions/CodingTip"
-      x-amazon-apigateway-integration:
-        uri: "${lambda_arn}/graphql"
-        passthroughBehavior: "when_no_match"
-        httpMethod: "POST"
-        type: "aws_proxy"
-    post:
-      description: "post a coding tip"
-      consumes:
-        - application/json
-      responses:
-        200:
-          description: "The codingtip was added successfully"
       x-amazon-apigateway-integration:
         uri: ${lambda_arn}
         passthroughBehavior: "when_no_match"
         httpMethod: "POST"
         type: "aws_proxy"
-  "/{id}":
+    post:
+      description: "Graphql Playground"
+      consumes:
+        - application/json
+      responses:
+        200:
+          description: "Graphql Playground"
+      x-amazon-apigateway-integration:
+        uri: ${lambda_arn}
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+  "/api":
     get:
-      description: "Get coding tips"
+      description: "REST APIs"
       produces:
         - application/json
       responses:
         200:
-          description: "The codingtips request successful."
-          schema:
-            type: array
-            items:
-              $ref: "#/definitions/CodingTip"
+          description: "REST APIs"
       x-amazon-apigateway-integration:
         uri: ${lambda_arn}
         passthroughBehavior: "when_no_match"
         httpMethod: "POST"
         type: "aws_proxy"
     post:
-      description: "post a coding tip"
+      description: "REST APIs"
       consumes:
         - application/json
       responses:
         200:
-          description: "The codingtip was added successfully"
+          description: "REST APIs"
       x-amazon-apigateway-integration:
         uri: ${lambda_arn}
         passthroughBehavior: "when_no_match"
         httpMethod: "POST"
         type: "aws_proxy"
-
-definitions:
-  CodingTip:
-    type: object
-    description: "A coding tip"
-    properties:
-      tip:
-        type: string
-        description: "The coding tip"
-      date:
-        type: number
-        description: "date in millis when tip was entered"
-      author:
-        type: string
-        description: "Author of the coding tip"
-      category:
-        type: string
-        description: "category of the coding tip"
-    required:
-      - tip

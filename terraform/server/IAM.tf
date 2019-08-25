@@ -43,7 +43,7 @@ EOF
 
 resource "aws_iam_role_policy" "cloudwatch-lambda-policy-python"{
   name = "cloudwatch-lambda-policy"
-  role = "${aws_iam_role.lambda-iam-role.id}"
+  role = "${aws_iam_role.lambda_iam_role.id}"
   policy = "${data.aws_iam_policy_document.api-gateway-logs-policy-document-python.json}"
 }
 
@@ -53,7 +53,7 @@ data "aws_iam_policy_document" "api-gateway-logs-policy-document-python" {
       "logs:CreateLogStream",
       "logs:CreateLogGroup",
       "logs:PutLogEvents"
-    ],
+    ]
     resources = [
       "arn:aws:logs:*:*:*"
     ]
