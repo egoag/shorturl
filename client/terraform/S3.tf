@@ -38,7 +38,7 @@ resource "null_resource" "upload" {
   }
 }
 
-output "s3 endpoint" {
+output "s3_endpoint" {
   value = "${aws_s3_bucket.site.website_endpoint}"
 }
 
