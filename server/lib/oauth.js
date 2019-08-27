@@ -1,5 +1,6 @@
 const url = require('url')
 const axios = require('axios')
+const debug = require('debug')('debug:lib:oauth')
 
 const GAPI = 'https://www.googleapis.com/oauth2/v3/userinfo'
 
@@ -39,6 +40,7 @@ const getEndpoint = () => {
  */
 const getUserInfo = async (token) => {
   const resp = await axios.get(GAPI, { headers: { Authorization: `Bearer ${token}` } })
+  debug(resp.data)
   return resp.data
 }
 

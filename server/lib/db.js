@@ -1,24 +1,21 @@
-const http = require('http')
+const https = require('https')
 const { promisify } = require('util')
 const AWS = require('aws-sdk')
 
-const agent = new http.Agent({
-  // https://theburningmonk.com/2019/02/lambda-optimization-tip-enable-http-keep-alive/
-  keepAlive: true
-})
-const TableName = 'ShortUrl'
-const UserIndex = 'ownerId-updatedAt-index'
 const Limit = 10
+const TableName = 'ShortUrl'
+const UserIndex = 'UserIndex'
 
 AWS.config.update({
   httpOptions: {
-    agent: agent
-  }
-})
-
-AWS.config.update({
-  region: 'ap-southeast-2',
-  endpoint: 'http://localhost:8000'
+    // https://theburningmonk.com/2019/02/lambda-optimization-tip-enable-http-keep-alive/
+    agent: new https.Agent({
+      keepAlive: true,
+      maxSockets: 50,
+      rejectUnauthorized: true
+    })
+  },
+  region: 'ap-southeast-2'
 })
 
 const TableInput = {
