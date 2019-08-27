@@ -5,7 +5,7 @@ const debug = require('debug')('debug:lib:oauth')
 const GAPI = 'https://www.googleapis.com/oauth2/v3/userinfo'
 
 const OAUTH_SCOPE = 'profile email'
-const OAUTH_REDIRECT = 'http://localhost:3000'
+const OAUTH_REDIRECT = 'https://shorturl.henshin.me/oauth/google'
 const OAUTH_CLIENT_ID = '341216547983-vmsjdifmov7unpr6jsi57h7e2eqgb14r.apps.googleusercontent.com'
 const OAUTH_RESPONSE_TYPE = 'token'
 
