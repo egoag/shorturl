@@ -4,13 +4,31 @@ Deploy code with terraform, and update DNS with cloudflare.
 
 ## Usage
 
+### Deploy
+
 Zip the source code, terraform apply.
 
-- In `/server` directory, zip the code folder: `zip -r -0 --exclude=*.DS_Store* --exclude=*.git* --exclude=terraform* terraform/server.zip .`.
+- Go to `server/terraform` directory.
 
-- In `/terraform/server` directory, initialize terraform: `terraform init`.
+- Initialize terraform: `terraform init`.
 
-- In `/terraform/server` folder, deploy by `terraform apply`, follow the instruction.
+- Zip the code folder and show archive filename: `zip -r -qq --exclude=*.git* --exclude=../terraform $(git rev-parse HEAD|cut -c 1-5).zip .. && echo "$(git rev-parse HEAD|cut -c 1-5).zip"` (*Named by first 5 characters of git head commit id*).
+
+- Deploy by `terraform apply`, follow the instruction.
+
+### Update
+
+To update code, commit the changes, rezip code folder
+
+`zip -r -qq --exclude=*.git* --exclude=../terraform $(git rev-parse HEAD|cut -c 1-5).zip .. && echo "$(git rev-parse HEAD|cut -c 1-5).zip"`
+
+Then run `terraform apply` to deploy it.
+
+*Archive filename should be defferent with previous one, or terraform would not update lambda. This action should only update aws lambda.*
+
+### Destroy
+
+In `/terraform/server` directory: `terraform destroy`
 
 ## IAM Permissions
 

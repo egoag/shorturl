@@ -1,7 +1,7 @@
 resource "aws_lambda_function" "default" {
   function_name = "shorturl_server"
 
-  filename = "server.zip"
+  filename = "${var.archive}"
 
   handler = "lambda.handler"
 

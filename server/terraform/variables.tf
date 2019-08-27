@@ -1,3 +1,7 @@
+variable "archive" {
+  description = "source code archive filename"
+}
+
 variable "domain" {
   type = "string"
   description = "Domain, \"example.com\" for example"
