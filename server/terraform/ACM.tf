@@ -8,7 +8,7 @@ resource "cloudflare_record" "acm_validation"{
   domain = "${var.domain}"
   name = "${aws_acm_certificate.cert.domain_validation_options.0.resource_record_name}"
   type = "${aws_acm_certificate.cert.domain_validation_options.0.resource_record_type}"
-  value = "${aws_acm_certificate.cert.domain_validation_options.0.resource_record_value}"
+  value = "${substr("${aws_acm_certificate.cert.domain_validation_options.0.resource_record_value}", 0, length("${aws_acm_certificate.cert.domain_validation_options.0.resource_record_value}") - 1)}"
   ttl = 1 # 1: auto
 }
 
