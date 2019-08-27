@@ -34,7 +34,7 @@ resource "aws_iam_role_policy" "dynamodb_lambda_policy"{
       "Action": [
         "dynamodb:*"
       ],
-      "Resource": "${aws_dynamodb_table.shorturl_dynamodb_table.arn}"
+      "Resource": "${aws_dynamodb_table.shorturl_dynamodb_table.arn}*"
     }
   ]
 }
