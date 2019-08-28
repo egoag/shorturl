@@ -1,13 +1,21 @@
 const createError = require('http-errors')
 const express = require('express')
 const logger = require('morgan')
+const cors = require('cors')
 
 const graphql = require('./graphql')
 const { authMiddleware } = require('./lib/auth')
 
 const app = express()
 
+const CORS = {
+  origin: '*',
+  methods: '*',
+  credentials: true
+}
+
 app.use(logger('dev'))
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
@@ -24,7 +32,7 @@ app.get('/', (_, res) => {
 })
 
 // enable /graphql
-graphql.applyMiddleware({ app })
+graphql.applyMiddleware({ app, cors: CORS })
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
