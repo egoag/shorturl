@@ -17,7 +17,7 @@ const getUrls = async (user, _, context) => {
 }
 
 /* Query */
-const login = async (_, { token: accessToken }) => {
+const getAuth = async (_, { token: accessToken }) => {
   let info, user
   try {
     info = await getUserInfo(accessToken)
@@ -48,5 +48,5 @@ const login = async (_, { token: accessToken }) => {
 
 module.exports = {
   getUrls,
-  login
+  getAuth
 }

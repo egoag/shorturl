@@ -11,10 +11,10 @@ const resolvers = {
     urls: users.getUrls
   },
   Query: {
-    getOauthUrl: getEndpoint,
-    login: users.login,
+    getAuth: users.getAuth,
     getMyUrls: urls.getMyUrls,
-    getUrlbyId: urls.getUrlById
+    getUrlbyId: urls.getUrlById,
+    getOauthUrl: getEndpoint
   },
   Mutation: {
     addUrl: urls.addUrl,

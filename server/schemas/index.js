@@ -30,10 +30,10 @@ type Urls {
 }
 
 type Query {
-  getOauthUrl: String
-  login(token: String!): Auth
+  getAuth(token: String!): Auth
   getMyUrls(limit: Int, lastKey: String): Urls
   getUrlbyId(id: ID!): URL
+  getOauthUrl: String
 }
 
 type Mutation {
