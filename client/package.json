@@ -5,6 +5,7 @@
   "dependencies": {
     "@apollo/react-hooks": "^3.0.1",
     "apollo-boost": "^0.4.4",
+    "dayjs": "^1.8.16",
     "graphql": "^14.5.3",
     "query-string": "^6.8.2",
     "react": "^16.9.0",

@@ -3,7 +3,7 @@ import Query from 'query-string'
 import { gql } from 'apollo-boost'
 import { useQuery } from '@apollo/react-hooks'
 
-const OAuth = ({ location }) => {
+const OAuth = ({ location, history }) => {
   const { access_token: accessToken } = Query.parse(location.hash)
   const { loading, error, data } = useQuery(gql`
     query getAuth($accessToken: String!){
@@ -23,9 +23,13 @@ const OAuth = ({ location }) => {
     )
   }
 
-  const { getAuth: { token } } = data
+  const { getAuth: { token, expiresAt } } = data
+  localStorage.setItem('token', token)
+  localStorage.setItem('tokenExpiresAt', expiresAt)
+
+  history.push('/')
   return (
-    <p>{token}</p>
+    <p>Logged in, redirecting...</p>
   )
 }
 
