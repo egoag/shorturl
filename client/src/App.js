@@ -1,8 +1,8 @@
 import React from 'react'
-import Dayjs from 'dayjs'
 import ApolloClient from 'apollo-boost'
 import { ApolloProvider } from '@apollo/react-hooks'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { AuthHeaders } from './lib/auth'
 import Home from './components/Home'
 import Jump from './components/Jump'
 import Login from './components/Login'
@@ -13,7 +13,7 @@ const GraphqlUri = 'https://api.shorturl.henshin.me/graphql'
 const client = new ApolloClient({
   uri: GraphqlUri,
   request: async operation => {
-    const authHeaders = auth()
+    const authHeaders = AuthHeaders()
     operation.setContext({
       headers: {
         ...authHeaders
@@ -21,21 +21,6 @@ const client = new ApolloClient({
     })
   }
 })
-
-const auth = () => {
-  const headers = {}
-  const token = localStorage.getItem('token')
-  const tokenExpiresAt = localStorage.setItem('tokenExpiresAt')
-  if (token && tokenExpiresAt) {
-    const now = Dayjs()
-    const expiresAt = Dayjs(tokenExpiresAt)
-    if (expiresAt.isAfter(now)) {
-      headers['authorization'] = `Bearer ${token}`
-    }
-  }
-
-  return headers
-}
 
 const App = () => (
   <div className="App">
