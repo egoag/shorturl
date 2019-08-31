@@ -39,7 +39,7 @@ class User {
     }
   }
 
-  static async getUrlsByOwnerId ({ ownerId, lastKey, limit = Limit, asc = true }) {
+  static async getUrlsByOwnerId ({ ownerId, lastKey, limit = Limit, asc = false }) {
     const data = await client.query({
       TableName,
       IndexName: UserIndex,
@@ -70,7 +70,7 @@ class User {
   /**
    * Slow
    */
-  async getUrls ({ lastKey, limit = Limit, asc = true }) {
+  async getUrls ({ lastKey, limit = Limit, asc = false }) {
     const urls = await User.getUrlsByOwnerId({ ownerId: this.id, lastKey, limit, asc })
     return urls
   }

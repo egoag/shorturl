@@ -23,7 +23,7 @@ const getMyUrls = async (_, { limit, lastKey: lastKeyString }, context) => {
   }
 
   let lastKey
-  if (lastKey) {
+  if (lastKeyString) {
     try {
       lastKey = JSON.parse(lastKeyString)
     } catch (e) {
@@ -42,7 +42,7 @@ const getUrlVersions = async (url, { id, limit, lastKey: lastKeyString }, contex
   }
 
   let lastKey
-  if (lastKey) {
+  if (lastKeyString) {
     try {
       lastKey = JSON.parse(lastKeyString)
     } catch (e) {
