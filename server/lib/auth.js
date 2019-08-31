@@ -1,14 +1,17 @@
 const jwt = require('jsonwebtoken')
 const expressJwt = require('express-jwt')
 
-const config = require('../config')
+const { Server: { Secret, Expiration } } = require('../config')
 
 const authMiddleware = expressJwt({
-  secret: config.Server.Secret,
+  secret: Secret,
   credentialsRequired: false
 })
 
-const sign = payload => jwt.sign(payload, config.Server.Secret, { expiresIn: '24h' })
+const sign = payload => ({
+  token: jwt.sign(payload, Secret, { expiresIn: Expiration }),
+  expiresIn: Expiration
+})
 
 module.exports = {
   sign,

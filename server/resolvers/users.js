@@ -1,5 +1,6 @@
-const { AuthenticationError } = require('apollo-server-express')
+const Dayjs = require('dayjs')
 const debug = require('debug')('debug:resolver:users')
+const { AuthenticationError } = require('apollo-server-express')
 
 const User = require('../models/user')
 const { sign } = require('../lib/auth')
@@ -39,9 +40,10 @@ const getAuth = async (_, { token: accessToken }) => {
     await user.create()
   }
 
-  const token = sign({ email: user.id })
-  debug({ token })
-  return { token }
+  const { token, expiresIn } = sign({ email: user.id })
+  const expiresAt = Dayjs().add(expiresIn).format()
+  debug({ email: user.id, token })
+  return { token, expiresAt }
 }
 
 /* Mutation */

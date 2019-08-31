@@ -21,6 +21,7 @@ type User {
 
 type Auth {
   token: String
+  expiresAt: String
 }
 
 type Urls {
