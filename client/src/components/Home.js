@@ -1,5 +1,6 @@
 import React from 'react'
 import { gql } from 'apollo-boost'
+import { Link } from 'react-router-dom'
 import { useMutation } from '@apollo/react-hooks'
 
 import Urls from './Urls'
@@ -37,7 +38,15 @@ const Home = () => {
 
   return (
     <div>
-      <h1>Welcome</h1>
+      <header>
+        <h2>Welcome</h2>
+        {
+          isLoggedIn
+            ? <p><Link to="/logout">Logout</Link></p>
+            : <p><Link to="/login">Login</Link></p>
+        }
+      </header>
+
       <form onSubmit={e => {
         const url = input.value
         e.preventDefault()

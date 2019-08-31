@@ -5,8 +5,9 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { AuthHeaders } from './lib/auth'
 import Home from './components/Home'
 import Jump from './components/Jump'
-import Login from './components/Login'
 import OAuth from './components/OAuth'
+import Login from './components/Login'
+import Logout from './components/Logout'
 import './App.css'
 
 const GraphqlUri = 'https://api.shorturl.henshin.me/graphql'
@@ -29,8 +30,9 @@ const App = () => (
         <Router>
           <Switch>
             <Route path="/" exact component={Home} ></Route>
-            <Route path="/login" component={Login} ></Route>
             <Route path="/oauth" component={OAuth} ></Route>
+            <Route path="/login" component={Login} ></Route>
+            <Route path="/logout" component={Logout} ></Route>
             <Route path="/:id([a-zA-Z0-9-_]+)" component={Jump} ></Route>
           </Switch>
         </Router>
