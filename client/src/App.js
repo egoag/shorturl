@@ -1,27 +1,13 @@
 import React from 'react'
-import ApolloClient from 'apollo-boost'
 import { ApolloProvider } from '@apollo/react-hooks'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import { AuthHeaders } from './lib/auth'
+import './App.css'
+import client from './graphql/client'
 import Home from './components/Home'
 import Jump from './components/Jump'
 import OAuth from './components/OAuth'
 import Login from './components/Login'
 import Logout from './components/Logout'
-import './App.css'
-
-const GraphqlUri = 'https://api.shorturl.henshin.me/graphql'
-const client = new ApolloClient({
-  uri: GraphqlUri,
-  request: async operation => {
-    const authHeaders = AuthHeaders()
-    operation.setContext({
-      headers: {
-        ...authHeaders
-      }
-    })
-  }
-})
 
 const App = () => (
   <div className="App">
