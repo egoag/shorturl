@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { gql } from 'apollo-boost'
 import { Link } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
@@ -20,18 +20,6 @@ const MY_URLS = gql`
   }
 `
 
-const GET_VERSION_VISIABLE = gql`
-  query IsVersionVisiable($id: ID!) {
-    isVersionVisiable(id: $id) @client(always: true)
-  }
-`
-
-const TOGGLE_VISIABLE = gql`
-  mutation ToggleVersionVisibility ($id: ID!) {
-    toggleVersionVisibility(id: $id) @client
-  }
-`
-
 const GET_URL_VERSIONS = gql`
   query getUrlbyId($id: ID!) {
     getUrlbyId(id: $id) {
@@ -48,37 +36,90 @@ const GET_URL_VERSIONS = gql`
   }
 `
 
-const Version = ({ url: { url, varies, createdAt } }) => (
-  <li className="url-version">
-    <span>{varies} {createdAt} {url}</span>
-  </li>
-)
+const UPDATE_URL = gql`
+mutation UpdateUrl($id: ID!, $url: String!) {
+  updateUrl(id: $id, url: $url) {
+    id
+    url
+    varies
+    latest
+  }
+}
+`
 
 const UrlVersions = ({ id }) => {
   const { loading, error, data, fetchMore } = useQuery(GET_URL_VERSIONS, { variables: { id } })
-  if (loading) return <p>Loading...</p>
+  if (loading) return <div>Loading...</div>
   if (error) return <Error error={error.message} />
   if (!data || !data.getUrlbyId || !data.getUrlbyId.versions || !data.getUrlbyId.versions.items) return <Error />
 
-  const { items } = data.getUrlbyId.versions
+  const { items, lastKey } = data.getUrlbyId.versions
   return (
     <ul>
-      {items.length > 1
-        ? items.slice(1).map(item => <Version url={item} />) : <p>no version</p>}
+      {items.length > 1 // first is latest, ignore
+        ? <div>
+          {items.slice(1).map(item => {
+            const domain = GetDomain(item.url)
+            return (
+              <li>
+                <span title={item.url}>{item.varies} {item.createdAt} {domain}</span>
+              </li>
+            )
+          })}
+          {lastKey
+            ? <button onClick={() => {
+              fetchMore({
+                query: GET_URL_VERSIONS,
+                updateQuery: (previousResult, { fetchMoreResult }) => {
+                  const { count: previousCount, items: previousItems } = previousResult.getUrlbyId.versions
+                  const { count, items, lastKey } = fetchMoreResult.getUrlbyId.versions
+                  return {
+                    getUrlbyId: {
+                      versions: {
+                        count: count + previousCount,
+                        lastKey,
+                        items: [...previousItems, ...items]
+                      }
+                    }
+                  }
+                }
+              })
+            }}>More</button>
+            : null
+          }
+        </div>
+        : <div>no version</div>
+      }
     </ul>
   )
 }
 
-const Url = ({ url: { id, url, latest } }) => {
-  const domain = GetDomain(url)
-  const { data: { isVersionVisiable }, refetch } = useQuery(GET_VERSION_VISIABLE, { variables: { id } })
-  const [toggleVersion] = useMutation(TOGGLE_VISIABLE, { variables: { id } })
+const Url = ({ url: { id, url: origUrl, latest: origLatest } }) => {
+  const [url, updateNewUrl] = useState(origUrl)
+  const [isVersion, toggleVersion] = useState(false)
+  const [isModifying, setIsModifying] = useState(false)
+  const [updateUrl, { loading, error, data: { url: newUrl, latest: newLatest } = {} }] = useMutation(UPDATE_URL, { variables: { id } })
 
-  const toggle = () => {
-    toggleVersion()
-    refetch() // @client(always: true) does not work, had to refetch manualll...
+  if (error) {
+    console.log('update error', error)
   }
-  const modify = () => {}
+  if (newUrl && newLatest) {
+    updateNewUrl(newUrl)
+  }
+
+  const latest = newLatest || origLatest
+  const domain = GetDomain(url)
+  const updateModify = () => {
+    setIsModifying(!isModifying)
+    updateUrl({ variables: { url: url } })
+  }
+  const toggleModify = () => {
+    setIsModifying(!isModifying)
+  }
+  const cancelModify = () => {
+    setIsModifying(!isModifying)
+    updateNewUrl(origUrl)
+  }
 
   return (
     <li>
@@ -89,20 +130,25 @@ const Url = ({ url: { id, url, latest } }) => {
               <Link to={`/${id}`} target="_blank" rel="noopener noreferrer" >
                 {id}
               </Link>
-              <span className="url-title">({domain})</span>
+              {isModifying
+                ? <input className="url-modify" onChange={e => updateNewUrl(e.target.value)} value={url} disabled={loading} ></input>
+                : <span className="url-title" title={url}>({domain})</span> }
             </span>
             : <span>{id}</span>
         }
       </span>
       <span className="url-info">
-        <span className="url-info-version clickable" onClick={toggle}>
-          V{latest}{isVersionVisiable ? '▾' : '▴'}
+        <span className="clickable" onClick={isModifying ? updateModify : toggleModify}>
+          {isModifying ? 'Update' : 'Modify' }
         </span>
-        <span className="url-info-modify clickable" onClick={modify}>
-          Modify
+        {isModifying
+          ? <span className="clickable" onClick={cancelModify}>Cancel</span>
+          : null}
+        <span className={`${latest > 0 ? 'clickable' : ''}`} onClick={() => toggleVersion(!isVersion)}>
+          V{latest}{latest > 0 ? isVersion ? '▾' : '▴' : ''}
         </span>
       </span>
-      {isVersionVisiable
+      {isVersion
         ? <UrlVersions id={id}/>
         : null}
     </li>
@@ -121,28 +167,30 @@ const Urls = () => {
       <ul style={{ textAlign: 'left' }}>
         {items.map(url => <Url key={url.id} url={url} />)}
       </ul>
-      <button
-        disabled={!lastKey}
-        onClick={() => {
-          fetchMore({
-            query: MY_URLS,
-            variables: { lastKey },
-            updateQuery: (previousResult, { fetchMoreResult }) => {
-              const { count: previousCount, items: previousItems } = previousResult.getMyUrls
-              const { count, lastKey, items } = fetchMoreResult.getMyUrls
-              return {
-                getMyUrls: {
-                  count: count + previousCount,
-                  lastKey,
-                  items: [...previousItems, ...items],
-                  __typename: previousResult.getMyUrls.__typename
+      {lastKey
+        ? <button
+          onClick={() => {
+            fetchMore({
+              query: MY_URLS,
+              variables: { lastKey },
+              updateQuery: (previousResult, { fetchMoreResult }) => {
+                const { count: previousCount, items: previousItems } = previousResult.getMyUrls
+                const { count, lastKey, items } = fetchMoreResult.getMyUrls
+                return {
+                  getMyUrls: {
+                    count: count + previousCount,
+                    lastKey,
+                    items: [...previousItems, ...items],
+                    __typename: previousResult.getMyUrls.__typename
+                  }
                 }
               }
-            }
-          })
-        }}>
+            })
+          }}>
         More
-      </button>
+        </button>
+        : null
+      }
     </div>
 
   )

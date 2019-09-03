@@ -1,8 +1,6 @@
 import { InMemoryCache } from 'apollo-boost'
 
-const data = {
-  visiableUrls: []
-}
+const data = {}
 
 const cache = new InMemoryCache()
 

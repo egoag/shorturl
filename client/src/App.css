@@ -18,17 +18,8 @@ span.url-info span {
   padding-left: 1rem
 }
 
-li.url-version {
-  width: 24em;
-  height: 2em; 
-  word-break: break-all;
-  overflow:hidden;
-}
-
-li.url-version:hover{
-  overflow: visible; 
-  white-space: normal;
-  height:auto;
+input.url-modify {
+  margin-left: 1rem
 }
 
 .clickable {
