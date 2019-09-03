@@ -12,20 +12,27 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  /* color: white; */
 }
 
-.App-link {
-  color: #61dafb;
+span.url-info span {
+  padding-left: 1rem
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+li.url-version {
+  width: 24em;
+  height: 2em; 
+  word-break: break-all;
+  overflow:hidden;
+}
+
+li.url-version:hover{
+  overflow: visible; 
+  white-space: normal;
+  height:auto;
+}
+
+.clickable {
+  text-decoration: underline
 }
 
 a:link,

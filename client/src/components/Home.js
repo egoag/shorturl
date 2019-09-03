@@ -29,7 +29,7 @@ const Home = () => {
     state = (
       <div>
         <p>
-          New Link: <code>https://shorturl.henshin.me/{id}</code> <a href={`/${id}`} target="blank" >Open</a>
+          New Link: <code>https://shorturl.henshin.me/{id}</code> <a href={`/${id}`} target="_blank" rel="noopener noreferrer" >Open</a>
         </p>
         <p>Orignal Link: {url}</p>
       </div>
