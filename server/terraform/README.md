@@ -18,9 +18,9 @@ Zip the source code, terraform apply.
 
 ### Update
 
-To update code, commit the changes, rezip code folder
+To update code, commit the changes, rezip code folder and set environment variable:
 
-`zip -r -qq --exclude=*.git* --exclude=../terraform* $(git rev-parse HEAD|cut -c 1-5).zip .. && echo "$(git rev-parse HEAD|cut -c 1-5).zip"`
+`zip -r -qq --exclude=*.git* --exclude=../terraform* $(git rev-parse HEAD|cut -c 1-5).zip .. && export TF_VAR_archive="$(git rev-parse HEAD|cut -c 1-5).zip"`
 
 Then run `terraform apply` to deploy it.
 
