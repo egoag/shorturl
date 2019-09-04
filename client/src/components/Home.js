@@ -3,7 +3,7 @@ import { gql } from 'apollo-boost'
 import { Link } from 'react-router-dom'
 import { useMutation } from '@apollo/react-hooks'
 
-import Urls from './Urls'
+import UrlList from './UrlList'
 import Error from './Error'
 import { IsValidUrl } from '../lib/url'
 import { IsLoggedIn } from '../lib/auth'
@@ -61,7 +61,7 @@ const Home = () => {
         <button type="submit">Go</button>
       </form>
       {state}
-      {isLoggedIn ? <Urls /> : null}
+      {isLoggedIn ? <UrlList /> : null}
     </div>
   )
 }
