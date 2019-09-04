@@ -100,7 +100,7 @@ const pageParse = ({ Items, Count, LastEvaluatedKey, ScannedCount }, Cls) => {
   return {
     items: Items.map(item => new Cls(item)),
     count: Count,
-    lastKey: LastEvaluatedKey,
+    lastKey: JSON.stringify(LastEvaluatedKey),
     scannedCount: ScannedCount
   }
 }
