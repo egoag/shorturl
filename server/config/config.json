@@ -1,0 +1,16 @@
+{
+  "Server": {
+    "Secret": "jwt!",
+    "Expiration": "7 days"
+  },
+  "AWS": {
+    "APIGateway": {
+      "Id": "ffffffffff",
+      "Stage": "dev",
+      "Path": "",
+      "Domain": {
+        "SecurityPolicy": "TLS_1_2"
+      }
+    }
+  }
+}
