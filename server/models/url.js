@@ -1,7 +1,7 @@
 const debug = require('debug')('debug:model:url')
 
 const randomId = require('../lib/randomId')
-const { client, pageParse, TableName, Limit } = require('../lib/db')
+const { client, pageParse, TableName, Limit } = require('../lib/aws')
 
 const SET_EXP = 'set #url = :url, latest = :latest, ownerId = :ownerId, createdAt = :createdAt, updatedAt = :updatedAt'
 const SET_EXP_NAMES = { '#url': 'url' }

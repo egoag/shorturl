@@ -1,3 +1,4 @@
+const ms = require('ms')
 const jwt = require('jsonwebtoken')
 const expressJwt = require('express-jwt')
 
@@ -10,7 +11,7 @@ const authMiddleware = expressJwt({
 
 const sign = payload => ({
   token: jwt.sign(payload, Secret, { expiresIn: Expiration }),
-  expiresIn: Expiration
+  expiresIn: ms(Expiration)
 })
 
 module.exports = {

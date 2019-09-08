@@ -1,7 +1,7 @@
 const debug = require('debug')('debug:model:user')
 
 const Url = require('./url')
-const { client, TableName, UserIndex, Limit } = require('../lib/db')
+const { client, TableName, UserIndex, Limit } = require('../lib/aws')
 
 const VARIES = 'user'
 const AVATAR = 'https://lh6.googleusercontent.com/-J_c_gM2Z8-w/AAAAAAAAAAI/AAAAAAAAIbo/e5HygWEOqoY/photo.jpg'

@@ -5,6 +5,7 @@ const AWS = require('aws-sdk')
 const Limit = 10
 const TableName = 'ShortUrl'
 const UserIndex = 'UserIndex'
+const GLOBAL_REGION = 'us-east-1'
 
 AWS.config.update({
   httpOptions: {
@@ -18,57 +19,13 @@ AWS.config.update({
   region: 'ap-southeast-2'
 })
 
-const TableInput = {
-  TableName,
-  KeySchema: [{
-    AttributeName: 'urlId',
-    KeyType: 'HASH'
-  }, {
-    AttributeName: 'varies',
-    KeyType: 'RANGE'
-  }],
-  AttributeDefinitions: [{
-    AttributeName: 'urlId',
-    AttributeType: 'S'
-  }, {
-    AttributeName: 'varies',
-    AttributeType: 'S'
-  }, {
-    AttributeName: 'ownerId',
-    AttributeType: 'S'
-  }, {
-    AttributeName: 'updatedAt',
-    AttributeType: 'S'
-  }],
-  ProvisionedThroughput: {
-    ReadCapacityUnits: 10,
-    WriteCapacityUnits: 10
-  },
-  GlobalSecondaryIndexes: [{
-    IndexName: UserIndex,
-    KeySchema: [{
-      AttributeName: 'ownerId',
-      KeyType: 'HASH'
-    }, {
-      AttributeName: 'updatedAt',
-      KeyType: 'RANGE'
-    }],
-    Projection: {
-      ProjectionType: 'KEYS_ONLY'
-    },
-    ProvisionedThroughput: {
-      ReadCapacityUnits: 5,
-      WriteCapacityUnits: 5
-    }
-  }]
-}
-
-const db = new AWS.DynamoDB()
-const client = new AWS.DynamoDB.DocumentClient()
+const acm = new AWS.ACM({ region: GLOBAL_REGION })
+const client = new AWS.DynamoDB.DocumentClient({})
+const apiGateway = new AWS.APIGateway()
 
 // promisify
-db.createTable = promisify(db.createTable)
-db.deleteTable = promisify(db.deleteTable)
+acm.requestCertificate = promisify(acm.requestCertificate)
+acm.describeCertificate = promisify(acm.describeCertificate)
 client.batchGet = promisify(client.batchGet)
 client.batchWrite = promisify(client.batchWrite)
 client.delete = promisify(client.delete)
@@ -79,18 +36,11 @@ client.scan = promisify(client.scan)
 client.update = promisify(client.update)
 client.transactGet = promisify(client.transactGet)
 client.transactWrite = promisify(client.transactWrite)
-
-const createTable = async () => {
-  const data = await db.createTable(TableInput)
-  return data
-}
-
-const deleteTable = async () => {
-  const data = await db.deleteTable({
-    TableName
-  })
-  return data
-}
+apiGateway.createDomainName = promisify(apiGateway.createDomainName)
+apiGateway.getDomainName = promisify(apiGateway.getDomainName)
+apiGateway.createBasePathMapping = promisify(apiGateway.createBasePathMapping)
+apiGateway.getBasePathMapping = promisify(apiGateway.getBasePathMapping)
+apiGateway.getBasePathMappings = promisify(apiGateway.getBasePathMappings)
 
 /**
  * Utils
@@ -106,11 +56,9 @@ const pageParse = ({ Items, Count, LastEvaluatedKey, ScannedCount }, Cls) => {
 }
 
 module.exports = {
-  db,
+  acm,
   client,
-  // For test
-  createTable,
-  deleteTable,
+  apiGateway,
   // Constants
   Limit,
   UserIndex,
