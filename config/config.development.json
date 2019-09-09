@@ -1,0 +1,30 @@
+{
+  "Server": {
+    "Secret": "jwt!",
+    "Expiration": "7 days"
+  },
+  "AWS": {
+    "APIGateway": {
+      "Id": "ffffffffff",
+      "Stage": "dev",
+      "Path": "",
+      "Domain": {
+        "SecurityPolicy": "TLS_1_2"
+      }
+    }
+  },
+  "OAuth": {
+    "Google": {
+      "Endpoint": {
+        "Protocol": "https",
+        "HostName": "accounts.google.com",
+        "PathName": "/o/oauth2/v2/auth"
+      },
+      "API": "https://www.googleapis.com/oauth2/v3/userinfo",
+      "Scope": "profile email",
+      "Redirect": "http://localhost:3000/oauth/google",
+      "ClientId": "341216547983-vmsjdifmov7unpr6jsi57h7e2eqgb14r.apps.googleusercontent.com",
+      "ResponseType": "token"
+    }
+  }
+}

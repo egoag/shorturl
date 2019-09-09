@@ -1,4 +1,5 @@
-const defaultConfig = require('./config.json')
+const production = require('./config.production.json')
+const development = require('./config.development.json')
 
 const loadEnv = (obj, prefix = 'CONFIG') => {
   for (const [key, val] of Object.entries(obj)) {
@@ -20,6 +21,6 @@ const loadEnv = (obj, prefix = 'CONFIG') => {
   return obj
 }
 
-const Config = loadEnv({ ...defaultConfig })
+const Config = loadEnv((process.env.NODE_ENV || '').match(/^(prod|production)$/) ? production : development)
 
 module.exports = Config
