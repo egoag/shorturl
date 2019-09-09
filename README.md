@@ -1,8 +1,14 @@
 # ShortUrl
-URL Shortener, supports management and version control!
 
-## Management
-Short URLs created by Logged in users can be modified multiple times.
+URL Shortener backend service, using GraphQL, DynamoDB and Lambda.
 
-## Version control
-Short URLs support version control, you can check modifications of them.
+## Features
+
+- Management
+- Version
+- Expiration(TBD)
+- Authorization(TBD)
+
+## Frontend(TBD)
+
+`https://github.com/youyaochi/shorturl-web`
