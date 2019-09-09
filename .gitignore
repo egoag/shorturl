@@ -95,7 +95,7 @@ typings/
 terraform.tfvars
 
 # lambda
-server/terraform/*.zip
+terraform/*.zip
 
 # mac os
 ## General

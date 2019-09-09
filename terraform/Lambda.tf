@@ -3,7 +3,7 @@ resource "aws_lambda_function" "default" {
 
   filename = "${var.archive}"
 
-  handler = "lambda.handler"
+  handler = "index.handler"
 
   runtime = "nodejs10.x"
 
