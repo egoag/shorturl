@@ -25,6 +25,7 @@ type Auth {
 }
 
 type Urls {
+  id: String
   items: [URL]
   count: Int
   lastKey: String

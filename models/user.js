@@ -60,6 +60,7 @@ class User {
     const items = await Promise.all(urlTasks)
 
     return {
+      id: ownerId,
       items: items,
       count: Count,
       lastKey: JSON.stringify(LastEvaluatedKey),
