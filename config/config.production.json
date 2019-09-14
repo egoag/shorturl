@@ -3,6 +3,12 @@
     "Secret": "jwt!",
     "Expiration": "7 days"
   },
+  "DB": {
+    "Region": "ap-southeast-2",
+    "TableName": "ShortUrl",
+    "UserIndex": "UserIndex",
+    "DefaultLimit": 10
+  },
   "AWS": {
     "APIGateway": {
       "Id": "ffffffffff",

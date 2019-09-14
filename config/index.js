@@ -21,6 +21,11 @@ const loadEnv = (obj, prefix = 'CONFIG') => {
   return obj
 }
 
-const Config = loadEnv((process.env.NODE_ENV || '').match(/^(prod|production)$/) ? production : development)
+const isTest = Boolean(process.env.JEST_WORKER_ID)
+const isProduction = Boolean((process.env.NODE_ENV || '').match(/^(prod|production)$/))
+const isDevelopment = !isProduction
+
+let Config = loadEnv(isProduction ? production : development)
+Config = { ...Config, isProduction, isDevelopment, isTest }
 
 module.exports = Config
