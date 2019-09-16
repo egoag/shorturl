@@ -1,3 +1,5 @@
+const _ = require('lodash')
+const base = require('./config.base.json')
 const production = require('./config.production.json')
 const development = require('./config.development.json')
 
@@ -25,7 +27,7 @@ const isTest = Boolean(process.env.JEST_WORKER_ID)
 const isProduction = Boolean((process.env.NODE_ENV || '').match(/^(prod|production)$/))
 const isDevelopment = !isProduction
 
-let Config = loadEnv(isProduction ? production : development)
+let Config = loadEnv(isProduction ? _.merge(base, production) : _.merge(base, development))
 Config = { ...Config, isProduction, isDevelopment, isTest }
 
 module.exports = Config
