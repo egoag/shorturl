@@ -1,0 +1,12 @@
+{
+  "DB": {
+    "Region": "local-env",
+    "Endpoint": "localhost:8000",
+    "SslEnabled": false
+  },
+  "OAuth": {
+    "Google": {
+      "Redirect": "http://localhost:3000/oauth/google"
+    }
+  }
+}

@@ -1,6 +1,9 @@
 {
   "DB": {
-    "Endpoint": "http://localhost:8000"
+    "Port": 8396,
+    "Region": "local-env",
+    "SslEnabled": false,
+    "Endpoint": "localhost:8396"
   },
   "OAuth": {
     "Google": {
@@ -8,3 +11,4 @@
     }
   }
 }
+ 

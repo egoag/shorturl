@@ -1,4 +1,9 @@
 {
+  "DB": {
+    "Region": "ap-southeast-2",
+    "Endpoint": null,
+    "SslEnabled": true
+  },
   "OAuth": {
     "Google": {
       "Redirect": "https://shorturl.henshin.me/oauth/google"

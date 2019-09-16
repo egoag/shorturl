@@ -5,7 +5,6 @@
   },
   "DB": {
     "Region": "ap-southeast-2",
-    "Endpoint": "http://localhost:8000",
     "TableName": "ShortUrl",
     "UserIndex": "UserIndex",
     "DefaultLimit": 10
